@@ -1,0 +1,6 @@
+{
+    "entryPoints":[
+        "./ejercicio-1.ts"
+    ],
+    "out": "./documentacion"
+}
