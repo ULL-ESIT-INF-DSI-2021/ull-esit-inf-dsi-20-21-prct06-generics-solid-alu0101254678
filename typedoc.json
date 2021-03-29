@@ -1,6 +1,14 @@
 {
     "entryPoints":[
-        "./ejercicio-1.ts"
+        "./src/ejercicio-2/clase-generica.ts",
+        "./src/ejercicio-2/isConvertible.ts",
+        "./src/ejercicio-2/fuerza.ts",
+        "./src/ejercicio-2/longitud.ts",
+        "./src/ejercicio-2/masa.ts",
+        "./src/ejercicio-2/temperatura.ts",
+        "./src/ejercicio-2/tiempo.ts",
+        "./src/ejercicio-2/velocidad.ts",
+        "./src/ejercicio-2/volumen.ts"
     ],
     "out": "./documentacion"
 }
