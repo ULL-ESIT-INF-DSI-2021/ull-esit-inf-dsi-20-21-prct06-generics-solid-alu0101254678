@@ -8,7 +8,15 @@
         "./src/ejercicio-2/temperatura.ts",
         "./src/ejercicio-2/tiempo.ts",
         "./src/ejercicio-2/velocidad.ts",
-        "./src/ejercicio-2/volumen.ts"
+        "./src/ejercicio-2/volumen.ts",
+        "./src/ejercicio-3/basicStreamableCollection.ts",
+        "./src/ejercicio-3/streamable.ts",
+        "./src/ejercicio-3/coleccion-documentales.ts",
+        "./src/ejercicio-3/coleccion-peliculas.ts",
+        "./src/ejercicio-3/coleccion-series.ts",
+        "./src/ejercicio-3/documentales.ts",
+        "./src/ejercicio-3/peliculas.ts",
+        "./src/ejercicio-3/series.ts"
     ],
     "out": "./documentacion"
 }
