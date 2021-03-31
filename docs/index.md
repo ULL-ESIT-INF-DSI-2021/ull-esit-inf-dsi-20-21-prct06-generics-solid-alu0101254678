@@ -18,7 +18,130 @@ los *Pokémon*.
 Comentaremos la resolución de los ejercicios propuestos, y además trataremos un nuevo aspecto, Instabull
 y Coveralls, que son herramientas de cubrimiento de código.
 
-## __Ejercicio 2 - Conversor de Unidades
+## __Ejercicio 1 - __
+Este ejercicio está relacionado directamente con la [práctica](https://ull-esit-inf-dsi-2021.github.io/prct05-objects-classes-interfaces/) anterior, en
+la que se realizaba un combate entre dos Pokémon, y se mostraba la evolución del combate.
+
+Ahora lo que queremos hacer es incluir luchadores de distintos universos, no solo de Pokémon, sin también de Marvel, DC, Star Wars 
+o Dragon Ball, entre otros.
+
+Para ello, desarrollamos una clase abstracta llamada __Fighter__ que que permite que un contendiente salga a luchar. Su aspecto sería 
+el siguiente:
+
+```TypeScript
+export abstract class Fighter {
+  nombre: string;
+  peso: number;
+  altura: number;
+  tipo: string;
+  ataque: number;
+  defensa: number;
+  velocidad: number;
+  vida: number;
+
+  constructor(nombre: string, peso: number, altura: number, tipo: string, ataque: number, defensa: number, velocidad: number, vida: number) {
+    this.nombre = nombre;
+    this.peso = peso;
+    this.altura = altura;
+    this.tipo = tipo;
+    this.ataque = ataque;
+    this.defensa = defensa;
+    this.velocidad = velocidad;
+    this.vida = vida;
+  }
+
+  abstract get_frase(): string;
+}
+```
+Esta será la super clase de las demás clases, cuyos atributos son los que vemos arriba, y tenemos un método que las
+clases hijas van a implementar, que se trata de un método que obtiene una frase característica según el universo
+al que pertenezca el personaje.
+
+Nuevamente disponemos de la clase combat, sin embargo, presenta algunas diferencias respecto a la práctica anterior,
+ya que tiene que permitir que combatan luchadores de distintos universos, así como incluso del propio universo, además, 
+cada vez que uno de los dos contrincantes realiza un ataque, se muestra una __catching phrase__ representativa de su
+universo:
+
+```TypeScript
+export class Combat<T extends DC | Dragon_Ball | Marvel | Pokemon | Star_Wars, U extends DC | Dragon_Ball | Marvel | Pokemon | Star_Wars> {
+  combatiente_1: T;
+  combatiente_2: U;
+
+  constructor(combatiente_1: T, combatiente_2: U) {
+    this.combatiente_1 = combatiente_1;
+    this.combatiente_2 = combatiente_2;
+  }
+
+```
+Como vemos, disponemos de dos tipos de datos genéricos, que son T, y U, que extienden a cualquiera de las clases de los 
+universos, la simulación de los combates es similar a la mostrada en la práctica anterior, a continuación mostramos de ejemplo,
+el método __start__, que inicia el combate entre dos luchadores:
+
+```TypeScript
+  start() {
+    do {
+      console.log(`Nombre: ${this.combatiente_1.nombre}, Tipo: ${this.combatiente_1.tipo}, Ataque: ${this.combatiente_1.ataque}, Defensa: ${this.combatiente_1.defensa}, Velocidad: ${this.combatiente_1.velocidad}, Vida: ${this.combatiente_1.vida}`);
+      console.log(`Nombre: ${this.combatiente_2.nombre}, Tipo: ${this.combatiente_2.tipo}, Ataque: ${this.combatiente_2.ataque}, Defensa: ${this.combatiente_2.defensa}, Velocidad: ${this.combatiente_2.velocidad}, Vida: ${this.combatiente_2.vida}`);
+
+      const dano_a_combatiente_2: number = this.efective_combatiente_1_to_combatiente_2();
+      console.log(`Daño de combatiente 1 a combatiente 2: ${dano_a_combatiente_2}`);
+      console.log(this.combatiente_1.get_frase());
+      const dano_a_combatiente_1: number = this.efective_combatiente_2_to_combatiente_1();
+      console.log(`Daño de combatiente 2 a combatiente 1: ${dano_a_combatiente_1}`);
+      console.log(this.combatiente_2.get_frase());
+
+      this.combatiente_2.vida -= dano_a_combatiente_2;
+      console.log(`vida de combatiente 2: ${this.combatiente_2.vida}`);
+      this.combatiente_1.vida -= dano_a_combatiente_1;
+      console.log(`vida de combatiente 1: ${this.combatiente_1.vida}`);
+      if (this.combatiente_1.vida <= 0) {
+        console.log(`Ha ganado ${this.combatiente_2.nombre}!`);
+        return;
+      }
+      if (this.combatiente_2.vida <= 0) {
+        console.log(`Ha ganado ${this.combatiente_1.nombre}!`);
+        return;
+      }
+    } while (this.combatiente_1.vida > 0 && this.combatiente_2.vida > 0);
+  }
+```
+
+Al principio se muestran los datos de los dos contendientes, y luego se va reduciendo su vida conforme al daño realizado por
+cada uno de ellos, también se muestra en la consola la evolución del combate, así como sus frases características, el combate
+finaliza cuando alguno de los contendientes tenga una vida igual o inferior a 0.
+
+Por último, hemos de actualizar la clase Pokédex, para que la colección pueda incluir el resto de contendientes, es decir, que
+deberá ser capaz de almacenar personajes de todos los universos considerados dentro de una misma estructura de datos:
+
+```TypeScript
+import {DC} from './dc';
+import {Dragon_Ball} from './dragon_ball';
+import {Marvel} from './marvel';
+import {Pokemon} from './pokemon';
+import {Star_Wars} from './star_wars';
+
+export class Pokedex_Enciclopedia<T extends DC & Dragon_Ball & Marvel & Pokemon & Star_Wars> {
+  vector_combatientes: Array<T>;
+
+  constructor(vector_combatientes: Array<T>) {
+    this.vector_combatientes = vector_combatientes;
+  }
+
+  mostrar_Combatientes() {
+    for (let indice = 0; indice < this.vector_combatientes.length; indice ++) {
+      console.table(this.vector_combatientes[indice]);
+    }
+  }
+}
+```
+La clase necesita que el parámetro genérico extienda a las demás clases dentro de la jerarquía, es decir, todas,
+porque no sabemos de antemano, cuántos tipos de datos contendrá la estructura, que en nuestro caso, decidimos que
+fuera un __vector__.
+
+Por último, dispone de un método que muestra información sobre el vector propiamente dicho, itera sobre
+cada uno de sus elementos, ya sean objetos de tipo Pokemon, Marvel, DC... e imprime por pantalla una tabla por cada objeto.
+
+## __Ejercicio 2 - Conversor de Unidades__
 Consideramos una herramienta que sea capaz de realizar operaciones de conversión sobre distintas magnitudes físicas,
 como pueden ser:
 
@@ -369,10 +492,51 @@ de código, como el total de ficheros o las *builds* realizadas hasta el momento
 al repositorio.
 
 ## __Conclusiones__
+La práctica está relacionada con conceptos algo más avanzados en __TypeScript__, como son las clases, y las interfaces genéricas,
+sin embargo estos conceptos habían sido tratados en otras asignaturas y lenguajes de programación, y por lo tanto, no es nuevo para
+nosotros, solo debemos considerar que TypeScript tiene otra forma de trabajar.
+
+Lo mismo ocurre con __Coveralls__, si bien nunca habíamos tratado con __instabull__, como herramienta de generación de informes, y
+estadísticas de cubrimiento de código, habíamos trabajado con Coveralls, aunque en el lenguaje de programación Ruby.
+
+Una de las comodidades a la hora de trabajar, y por la que nos hemos dado cuenta, a lo largo del desarrollo de las es que los ficheros 
+__.json__, son muy potentes para la configuración de los distintos parámetros.
+
+No lo hemos indicado anteriormente, pero en el __README.md__ del repositorio de esta práctica se encuentra un __badge__ representativo
+de Coveralls que hemos copiado de la web de nuestro repositorio en Coverallsy lo hemos añadido, indicando cuanto porcentaje de código
+se ha cubrido.
+
+Por último, mencionamos que el desarrollo de las pruebas con __mocha__ y __chai__, asi como la generación de documentación con
+__typedoc__ se ha realizado, aunque no se haya explicado explícitamente en un apartado.
+
+Para consultar la instalación, configuración y uso de __mpcha__, __chai__ y __typedoc__, se puede seguir la [práctica](https://ull-esit-inf-dsi-2021.github.io/ull-esit-inf-dsi-20-21-prct05-objects-classes-interfaces-alu0101254678/) anterior.
+
 
 ## __Bibliografía__
 
+* ¿Cómo se ha estructurado el proyecto?
 
+<https://ull-esit-inf-dsi-2021.github.io/typescript-theory/typescript-project-setup.html>
+
+* Documentación sobre *instabull*:
+
+<https://istanbul.js.org/>
+
+* Página principal de *Coveralls* y Documentación:
+
+<https://coveralls.io/>
+
+* Repositorio GitHub con el ejemplo de cubrimiento de código mediante *Instabull* y *Coveralls:*
+
+<https://github.com/ULL-ESIT-INF-DSI-2021/coveralls-typescript>
+
+* Vídeo de ejemplo con cubrimiento de código mediante *instabull* y *coveralls*
+
+<https://drive.google.com/file/d/1xLDc4CpoYpsAlCFO_4DMwu7MKCtcZDnh/view>
+
+* Apuntes de clase sobre clases e interfaces genéricas
+
+<https://ull-esit-inf-dsi-2021.github.io/typescript-theory/typescript-generics.html>
 
 
 
