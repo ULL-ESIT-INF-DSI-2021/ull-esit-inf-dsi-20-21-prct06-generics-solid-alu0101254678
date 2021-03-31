@@ -1,6 +1,6 @@
-# Desarrollo de Sistemas Informáticos
-## Práctica 6 - Clases e Interfaces Genéricas, Principios SOLID.
-## Yago Pérez Molanes (alu0101254678@ull.edu.es)
+# __Desarrollo de Sistemas Informáticos__
+## __Práctica 6 - Clases e Interfaces Genéricas, Principios SOLID.__
+## __Yago Pérez Molanes (alu0101254678@ull.edu.es)__
 __*Contenidos del informe*__
 
 __*Pasos realizados para el desarrollo de la práctica*__
@@ -18,7 +18,7 @@ los *Pokémon*.
 Comentaremos la resolución de los ejercicios propuestos, y además trataremos un nuevo aspecto, Instabull
 y Coveralls, que son herramientas de cubrimiento de código.
 
-## __Ejercicio 1 - __
+## __Ejercicio 1 - El Combate Definitivo__
 Este ejercicio está relacionado directamente con la [práctica](https://ull-esit-inf-dsi-2021.github.io/prct05-objects-classes-interfaces/) anterior, en
 la que se realizaba un combate entre dos Pokémon, y se mostraba la evolución del combate.
 
@@ -409,7 +409,7 @@ describe('Test que realiza pruebas sobre la clase Coleccion_Series', () => {
 
 ```
 
-## Anexo: Cubrimiento de código con Instabull y Coveralls
+## __Anexo: Cubrimiento de código con Instabull y Coveralls__
 
 __Instabull__ es una herramienta para desarrolladores que permite obtener informes sobre el cubrimiento de
 código fuente llevado a cabo por las pruebas que hemos diseñado, por lo tanto, permite obtener una 
