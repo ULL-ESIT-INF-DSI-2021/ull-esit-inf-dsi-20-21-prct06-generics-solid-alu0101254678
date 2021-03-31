@@ -132,3 +132,202 @@ describe('Test que realiza pruebas sobre la clase Generica', () => {
 No olvidemos que debemos importar los ficheros adecuados para que todo funcione bien.
 
 ## __Ejercicio 3 - DSIflix__
+En este ejercicio vamos a diseñar el modelo de datos de una plataforma de vídeo en Streaming, a través del 
+catálogo de dicha plataforma se puede acceder a películas, series y documentales.
+
+Es necesario diseñar una interfaz genérica que llamamos __Streamable__, con la que hemos de definir
+los atributos y métodos necesarios con los que debería contar, por ejemplo, una colección de series.
+
+Sería muy conveniente construir algunos métodos que permitan realizar una búsqueda sencilla, a través 
+del nombre o la fecha, sobre la colección de películas, series, o documentales.
+
+A continuación mostramos el código de la interfaz __Streamable__:
+
+```TypeScript
+export interface Streamable<T> {
+  añadirObjeto(nuevo_Objeto: T): void;
+  obtenerNumeroObjetos(): number;
+}
+
+export interface SearchStreamable<T> extends Streamable<T>{
+  obtenerObjetosPorNombre(nombre: string): T[];
+  obtenerObjetosPorFecha(fecha: number): T[];
+}
+```
+
+Hemos diseñado dos interfaces, ya que la segunda, es una __especificación__ de la primera, es decir, que la
+especializa, y por lo tanto, para no complicar demasiado el diseño inicial, la separamos.
+
+Entonces tenemos dos interfaces genéricas, por un lado __Streamable__, y por otro, __SearchStreamable__, cuya 
+única función es definir los métodos de búsqueda comentados anteriormente.
+
+A continuación, creamos una clase abstracta genérica, a la que llamamos __basicStreamableCollection__, la cual,
+implementa las interfaces anteriores, sin embargo, se realiza una implementación __parcial__, ya que, en esta
+jerarquía, las subclases correspondientes son las que se encargarán de estructurar los métodos de búsqueda.
+
+```TypeScript
+import {SearchStreamable} from './streamable';
+
+export abstract class BasicStreamableCollection<T> implements SearchStreamable<T> {
+  constructor(protected objetos: T[]) {};
+
+  añadirObjeto(nuevo_Objeto: T) {
+    this.objetos.push(nuevo_Objeto);
+  }
+
+  obtenerNumeroObjetos() {
+    return this.objetos.length;
+  }
+
+  abstract obtenerObjetosPorFecha(fecha: number): T[];
+
+  abstract obtenerObjetosPorNombre(nombre: string): T[];
+
+```
+Vemos como los métodos __añadirObjeto__(que añade un nuevo objeto a la colección, ya sea una serie, película...) y 
+__obtenerNumeroObjeto__(que retorna el número de series, películas, documentaless...) se implementan en la clase
+abstracta genérica, mientras que __obtenerObjetosPorFecha__ y __obtenerObjetosPorNombre__ solo se definen, porque ahora
+damos paso a la colección de alguno de los elementos del catálogo:
+
+```TypeScript
+import {Serie} from './series';
+import {BasicStreamableCollection} from './basicStreamableCollection';
+
+export class Coleccion_Series extends BasicStreamableCollection<Serie> {
+  constructor(objetos: Serie[]) {
+    super(objetos);
+  }
+
+  obtenerObjetosPorFecha(fecha: number): Serie[] {
+    return this.objetos.filter((objeto: Serie) => objeto.get_fecha() === fecha);
+  }
+
+  obtenerObjetosPorNombre(nombre: string): Serie[] {
+    return this.objetos.filter((objeto: Serie) => objeto.get_nombre() === nombre);
+  }
+}
+```
+Tenemos tres colecciones, __coleccion-documentales__, __coleccion-peliculas__, y __coleccion-series__, el código
+anterior corresponde a ésta última, en la que, como mencionábamos, se realiza la implementación de 
+los métodos más especializados, que son los de búsqueda, se obtiene un vector con los objetos buscados por
+fecha y otro por nombre, indicados en el parámetro que éste recibe.
+
+Por último, en la jerarquía de la parte final tenemos las clases __documentales__, __peliculas__ y __series__,
+que en realizad son la pieza clave, puesto que representan a un único elemento dentro del propio catálogo:
+
+Por ejemplo, para la clase __series__:
+
+```TypeScript
+export class Serie {
+  private nombre: string;
+  private fecha: number;
+
+  /**
+   * El constructor inicializa los atributos
+   * del objeto
+   * @param nombre el nombre que se recibe
+   * @param fecha la fecha que se recibe
+   */
+  constructor(nombre: string, fecha: number) {
+    this.nombre = nombre;
+    this.fecha = fecha;
+  }
+
+  /**
+   * Obtiene el atributo nombre
+   * @returns el nombre
+   */
+  get_nombre(): string {
+    return this.nombre;
+  }
+
+  /**
+   * Obtiene el atributo fecha
+   * @returns la fecha
+   */
+  get_fecha(): number {
+    return this.fecha;
+  }
+}
+
+```
+
+También aprovechamos para destacar alguno de los comentarios realizados en __typedoc__, sobre esta clase.
+
+El diseño es relativamente sencillo, ya que solo se trabaja con dos atributos, que son __nombre__, una
+cadena de caracteres, y __fecha__, un número.
+
+Por último, mostramos algunas de las pruebas realizadas sobre, por ejemplo, __coleccion-series__:
+
+```TypeScript
+describe('Test que realiza pruebas sobre la clase Coleccion_Series', () => {
+  it('Se accede a sus atributos y a sus métodos, así como a los métodos de basicStreamableCollection', () => {
+    const coleccion: Coleccion_Series = new Coleccion_Series([
+      new Serie('Los Simpsons', 1990),
+      new Serie('La casa de papel', 2020),
+      new Serie('Ataque a los titanes', 2020),
+    ]);
+
+    expect(coleccion.obtenerNumeroObjetos()).to.be.equal(3);
+    expect(coleccion.obtenerNumeroObjetos()).not.to.be.equal(2);
+
+    expect(coleccion).is.an.instanceof(Coleccion_Series);
+
+    const serie_Gumball: Serie = new Serie('Gumball', 2015);
+    coleccion.añadirObjeto(serie_Gumball);
+
+    expect(coleccion.obtenerNumeroObjetos()).to.be.equal(4);
+
+    expect(coleccion.obtenerObjetosPorFecha(2000)).to.have.same.members([]);
+    expect(coleccion.obtenerObjetosPorNombre('El zorro')).to.have.same.members([]);
+    expect(coleccion.obtenerObjetosPorNombre('Gumball')).to.have.same.members([serie_Gumball]);
+  });
+});
+
+```
+
+## Anexo: Cubrimiento de código con Instabull y Coveralls
+
+__Instabull__ es una herramienta para desarrolladores que permite obtener informes sobre el cubrimiento de
+código fuente llevado a cabo por las pruebas que hemos diseñado, por lo tanto, permite obtener una 
+estadística para saber la cantidad de código por las que nuestras pruebas lo *cubren*.
+
+Vamos a configurar nuestro proyecto para obtener un informe de cubrimiento de código cada vez que se
+lleven a cabo las pruebas.
+
+El primer paso es instalar las herramientas como dependencias de desarrollo, __nyc__ es el editor de comandos:
+
+```bash
+npm install --save-dev nyc coveralls
+```
+
+Posteriormente en el fichero __package.json__ comprobamos que se han instalado las dependencias necesarias y
+añadimos el siguiente script:
+
+```JSON
+  "scripts": {
+    "test": "mocha",
+    "start": "tsc-watch --onSuccess \"node dist/ejercicio-3/coleccion-documentales.js\"",
+    "docs": "typedoc",
+    "coverage": "nyc npm test"
+  },
+
+  "devDependencies": {
+    "@types/chai": "^4.2.15",
+    "@types/mocha": "^8.2.2",
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
+    "@typescript-eslint/parser": "^4.19.0",
+    "chai": "^4.3.4",
+    "coveralls": "^3.1.0",
+    "eslint": "^7.23.0",
+    "eslint-config-google": "^0.14.0",
+    "mocha": "^8.3.2",
+    "nyc": "^15.1.0",
+    "ts-node": "^9.1.1",
+    "tsc-watch": "^4.2.9",
+    "typedoc": "^0.20.34"
+  }
+```
+Ahora ya estamos en disposición de ejecutar las pruebas, sin embargo, veremos que con el comando
+__coverage__ será diferente:
+![]()
