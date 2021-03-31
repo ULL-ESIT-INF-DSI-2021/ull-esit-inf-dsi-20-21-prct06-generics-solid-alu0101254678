@@ -330,4 +330,47 @@ añadimos el siguiente script:
 ```
 Ahora ya estamos en disposición de ejecutar las pruebas, sin embargo, veremos que con el comando
 __coverage__ será diferente:
-![]()
+![Imagen_nyc_instabull](https://github.com/ULL-ESIT-INF-DSI-2021/ull-esit-inf-dsi-20-21-prct06-generics-solid-alu0101254678/blob/master/img_pr_6/nyc_instabull.png?raw=true)
+
+Si bien es cierto que hemo ejecutado las pruebas con __mocha__ y __chai__, la diferencia se encuentra en que hemos
+antepuesto __nyc__, lo que significa que vamos a generar un informe a partir de las pruebas descritas, por otro lado,
+la captura indica varios aspectos que podemos comeentar:
+
+* Se muestra en una tabla los ficheros analizados, así como en porcentajes, el número de líneas, funciones, y ramas.
+
+Como hemos cubrido un 100 por cien de nuestro código, todo se encuentra en color verde, pero si nos faltara algo, 
+se mostraría en la tabla, además la captura corresponde a la ejecución de las pruebas cuando únicamente se 
+estaba trabajando con el ejericio 2.
+
+Si queremos que nuestros informes se *enganchen*, con __coveralls__, la herramienta de cubrimiento de código, hemos de
+iniciar sesión en Coveralls, con nuestra cuenta de GitHub, habilitar el seguimiento de nuestro repositorio, añadir el fichero
+__.coveralls.yml__, y pegar el repo_token una vez que se ha habilitado el seguimiento, que será cada vez que empujemos
+los cambios al repositorio.
+
+De esta forma los informes de __instabull__ se suben a __coveralls__, ahora para que funcione nuevamente modificamos el script 
+__coveralls__ del __package.json__:
+
+```JSON
+  "scripts": {
+    "test": "mocha",
+    "start": "tsc-watch --onSuccess \"node dist/ejercicio-3/coleccion-documentales.js\"",
+    "docs": "typedoc",
+    "coverage": "nyc npm test && nyc report --reporter=text-lcov | coveralls"
+  },
+```
+
+![Imagen Coveralls](https://github.com/ULL-ESIT-INF-DSI-2021/ull-esit-inf-dsi-20-21-prct06-generics-solid-alu0101254678/blob/master/img_pr_6/coveralls.png?raw=true)
+
+
+
+
+
+
+## __Conclusiones__
+
+## __Bibliografía__
+
+
+
+
+
