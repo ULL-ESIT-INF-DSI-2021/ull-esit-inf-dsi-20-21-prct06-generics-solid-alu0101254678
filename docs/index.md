@@ -359,12 +359,14 @@ __coveralls__ del __package.json__:
   },
 ```
 
+Con la información de cubrimiento generamos un informe en un formato que se llama __lcof__, empleando el reporter __text-lcof__, 
+y se lo enviamos a __coveralls__.
+
 ![Imagen Coveralls](https://github.com/ULL-ESIT-INF-DSI-2021/ull-esit-inf-dsi-20-21-prct06-generics-solid-alu0101254678/blob/master/img_pr_6/coveralls.png?raw=true)
 
-
-
-
-
+La captura anterior muestra la interfaz de Coveralls en la web, en la que se puede observar diversa información de cubrimiento
+de código, como el total de ficheros o las *builds* realizadas hasta el momento, se actualizará cada vez que empujemos cambios
+al repositorio.
 
 ## __Conclusiones__
 
